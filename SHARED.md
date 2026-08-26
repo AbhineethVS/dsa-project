@@ -6,31 +6,51 @@ Simple agreement so Person 1 and Person 2 can work separately without breaking e
 
 ## Who does what
 
-### Person 1 — Music Library & Playlists
+### Person 1 — Music Library & Song Management
 
-- Array: songs in an album
-- Linked List: playlists
-- Tree: Artist → Album → Songs
-- Hash Table: Song ID / name → Song
-- Add / remove / search songs
-- Manage artists, albums, playlists
+**Data structures**
+- Array → songs within an album
+- Tree → Artist → Album → Songs
+- Hash Table → Song ID / name → Song
 
-### Person 2 — Music Player & Playback
+**Responsibilities**
+- Song, Album, Artist structures
+- Music library
+- Add / remove songs
+- Add / remove artists and albums
+- Search songs by ID / name
+- Display albums / artists / songs
+- Array ops for album songs
+- Tree insertion / traversal / search
+- Hash-table insertion / search / deletion
 
-- Stack: recently played / back
-- Queue: play-next queue
-- Play / pause / next / previous
-- Add / remove songs from play-next
-- Playback history
-- Automatic next-song handling
+### Person 2 — Playlists & Music Player
+
+**Data structures**
+- Linked List → playlist
+- Stack → recently played / back
+- Queue → play-next queue
+
+**Responsibilities**
+- Playlist structure
+- MusicPlayer / playback state
+- Create / delete playlists
+- Add / remove / reorder songs in playlists
+- Play a song
+- Next / previous (back)
+- Add / remove songs from play-next queue
+- Recently played history
+- Automatic next-song selection
+- Coordinate playlist + queue + stack
 
 ### Shared
 
-- Song, Album, Artist models
+- Song, Album, Artist field names (same in both codebases)
 - Song identity (ID)
-- Common function names both sides call
-- Error / status codes
+- Status codes
+- How Person 2 looks up a song from Person 1 (`searchSongById`)
 - Demo flow
+- Git workflow
 
 ---
 
@@ -40,81 +60,69 @@ Both people must use the **same names and meaning** for these.
 
 ### 1. Models
 
-| Model  | Must agree on                      |
-| ------ | ---------------------------------- |
-| Song   | id, title, duration, link to album |
-| Album  | name, songs, link to artist        |
-| Artist | name, albums under them            |
+| Model | Must agree on | Owner of implementation |
+|-------|---------------|-------------------------|
+| Song / Album / Artist fields | Same field names | Person 1 |
+| Playlist fields | Same field names | Person 2 |
 
 Also agree:
-
 - Duration = integer seconds
 - Names = fixed-size text (same max length)
 - Unique song identity = **Song ID** (not title alone)
 
-### 2. What the player stores
+### 2. What playlists / player store
 
-Stack and Queue should store **Song IDs** (or pointers to Song),  
-**not** a second copy of full song data.
+Linked list, stack, and queue store **Song IDs** (`int`),  
+**not** full copies of song data.
 
-Person 2 asks Person 1: “give me the song for this ID.”
+Person 2 asks Person 1: “give me the song for this ID” via `searchSongById`.
 
-### 3. Who owns current playback state
+### 3. Who owns what state
 
-| Thing             | Owner    | Notes                         |
-| ----------------- | -------- | ----------------------------- |
-| currentSong       | Person 2 | Only player changes this      |
-| isPlaying / pause | Person 2 | Only player changes this      |
-| currentPlaylist   | Person 2 | Player may ask library for it |
-| Library / tree    | Person 1 | Player only reads via lookups |
+| Thing | Owner | Notes |
+|-------|-------|-------|
+| Library / tree / hash / album arrays | Person 1 | Person 2 only reads via lookup APIs |
+| Playlists (linked lists) | Person 2 | Fully owned by Person 2 |
+| `currentSongId` / playing flag | Person 2 | Only player changes these |
+| Play-next queue | Person 2 | |
+| Recently-played stack | Person 2 | |
 
-### 4. Function boundary (who owns which verbs)
+### 4. Function boundary
 
 **Person 1 provides**
-
-- add / remove / search song
-- manage artist / album / playlist
-- get song by ID
-- get song by name
-- get songs from a playlist (in order)
+- add / remove artist, album, song
+- search song by ID / name
+- display artists / albums / songs
 
 **Person 2 provides**
-
-- play / pause
-- next / previous
-- add / remove play-next
-- use recently-played stack
+- create / delete playlist
+- add / remove / reorder playlist songs
+- play / pause / next / previous
+- play-next queue ops
+- recently-played stack ops
 - decide what plays when a song ends
 
 **Important rule for “next song”**
-
-- Person 2 decides playback flow
+- Person 2 decides playback flow alone
 - If play-next queue has songs → play from queue
-- If queue is empty → Person 2 asks Person 1 for the next song in the playlist
+- If queue is empty → Person 2 uses **their own** playlist linked list for the next song
+- Person 1 is only needed to resolve song ID → song details for display
 
 ### 5. Shared status codes
 
-Use the same return style everywhere, e.g.:
-
+Same return style everywhere (see `DECISIONS.md`):
 - `0` = success
-- `-1` = failed / not found / empty
-
-Common cases both should handle the same way:
-
-- song not found
-- playlist empty
-- queue empty
-- stack empty (nothing to go back to)
-- duplicate song ID
+- negative = error (not found / empty / full / duplicate / invalid)
 
 ### 6. File ownership
 
-| Area                         | Owner               | Shared? |
-| ---------------------------- | ------------------- | ------- |
-| Song / Album / Artist models | Both                | YES     |
-| Array, Tree, Hash, Playlist  | Person 1            | NO      |
-| Stack, Queue, Player         | Person 2            | NO      |
-| Main menu                    | One person (decide) | YES     |
+| Area | Owner | Shared? |
+|------|-------|---------|
+| Song / Album / Artist models | Person 1 (fields agreed) | YES (names) |
+| Array, Tree, Hash, library | Person 1 | NO |
+| Playlist linked list | Person 2 | NO |
+| Stack, Queue, Player | Person 2 | NO |
+| Main menu / `main.c` | Person 2 | YES (wires both) |
 
 ---
 
@@ -123,18 +131,16 @@ Common cases both should handle the same way:
 Do **not** edit each other’s internals.
 
 **Person 1 only**
-
 - How album arrays are stored
-- How playlist linked list nodes work
 - How the artist/album tree is built
 - How the hash table is implemented
+- Display formatting for library contents
 
 **Person 2 only**
-
+- How playlist linked list nodes work
 - How the recently-played stack works
 - How the play-next queue works
-- Pause / resume logic
-- History management details
+- Pause / resume / next-song coordination
 
 You only depend on each other’s **public functions**, not private details.
 
@@ -146,16 +152,16 @@ Use **one shared GitHub repo**. Do **not** use two repos.
 
 ### Branches
 
-| Branch            | Who      | What goes here              |
-| ----------------- | -------- | --------------------------- |
-| `main`            | Both     | Only finished, merged work  |
-| `person1-library` | Person 1 | Library, playlists, tree, hash |
-| `person2-player`  | Person 2 | Stack, queue, playback      |
+| Branch | Who | What goes here |
+|--------|-----|----------------|
+| `main` | Both | Only finished, merged work |
+| `person1-library` | Person 1 | Array, tree, hash, library APIs |
+| `person2-player` | Person 2 | Playlist LL, stack, queue, player, `main.c` |
 
 ### Rules
 
 1. Create one common repo. Add the other person as collaborator.
-2. Put `SHARED.md` + shared models on `main` first.
+2. Put shared docs + `models.h` on `main` first.
 3. Each person works only on their own branch.
 4. Do **not** commit feature work straight to `main`.
 5. When a piece is ready, open a **Pull Request (PR)** into `main`.
@@ -165,7 +171,7 @@ Use **one shared GitHub repo**. Do **not** use two repos.
 
 ### Suggested merge timing
 
-- **Mid-way:** once Person 1 has song lookup + playlist ready (Person 2 needs this)
+- **Mid-way:** once Person 1 has `searchSongById` working (Person 2 needs this for display / play info)
 - **End:** final integration + demo
 
 ### Bottom line for Git
@@ -177,23 +183,23 @@ Use **one shared GitHub repo**. Do **not** use two repos.
 
 ---
 
-## One meeting checklist (do this before coding)
+## Docs to use
 
-All of these are now decided in **`DECISIONS.md`**.
-
-- Read `DECISIONS.md` once together
-- Use **`CHEATSHEET.md`** every day while coding
-- Only change decisions if both agree
+| Doc | Use for |
+|-----|---------|
+| `SHARED.md` | Who does what + Git (this file) |
+| `DECISIONS.md` | Exact names, APIs, sample data |
+| `CHEATSHEET.md` | Daily quick lookup while coding |
 
 ---
 
 ## Simple demo plan (for final integration)
 
-1. Person 1 builds a small library + one playlist
-2. Person 2 plays that playlist
+1. Person 1 builds a small library (artists / albums / songs)
+2. Person 2 creates playlist `Favorites` and plays it
 3. User adds a song to play-next
 4. Previous uses the recently-played stack
-5. Search a song by ID/name (hash table)
+5. Search a song by ID/name (Person 1 hash table)
 
 If this demo runs, the project is integrated.
 
@@ -201,7 +207,7 @@ If this demo runs, the project is integrated.
 
 ## Bottom line
 
-- **Shared** = models + IDs + function names + status codes + who owns current song
-- **Not shared** = how each data structure is built inside
-- Freeze the shared part first, then code in parallel
-- **Git** = one repo, two branches (`person1-library`, `person2-player`), PRs into `main`
+- **Person 1** = library (array + tree + hash)
+- **Person 2** = playlists + player (linked list + stack + queue)
+- **Shared** = Song/Album/Artist field names + IDs + status codes + lookup API
+- **Git** = one repo, two branches, PRs into `main`

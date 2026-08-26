@@ -3,7 +3,8 @@
 Final names and rules both people must follow.  
 Do not change these without telling the other person.
 
-Quick daily lookup → **`CHEATSHEET.md`**
+Quick daily lookup → **`CHEATSHEET.md`**  
+Work split overview → **`SHARED.md`**
 
 ---
 
@@ -12,12 +13,13 @@ Quick daily lookup → **`CHEATSHEET.md`**
 | Role | Decision |
 |------|----------|
 | GitHub repo creator | Person 1 creates the repo and adds Person 2 as collaborator |
-| First commit on `main` | `SHARED.md`, this file, and shared model headers |
-| Menu / `main.c` | **Person 2** writes `main.c` and the menu (player needs to drive the demo) |
+| First commit on `main` | Docs + shared `models.h` (Song / Album / Artist + status codes) |
+| Menu / `main.c` | **Person 2** writes `main.c` and the menu |
 | Person 1 branch | `person1-library` |
 | Person 2 branch | `person2-player` |
 
-Person 1 still provides library functions that the menu calls.
+Person 1 provides library lookup/display functions that the menu calls.  
+Person 2 owns playlists + playback and wires everything in `main.c`.
 
 ---
 
@@ -38,9 +40,7 @@ Person 1 still provides library functions that the menu calls.
 
 ## 3. Shared models (exact field names)
 
-Use these exact struct / field names in C.
-
-### Song
+### Song (Person 1 implements)
 | Field | Type idea | Meaning |
 |-------|-----------|---------|
 | `id` | `int` | Unique song ID |
@@ -49,7 +49,7 @@ Use these exact struct / field names in C.
 | `artistName` | `char artistName[64]` | Artist name (for easy display) |
 | `albumName` | `char albumName[64]` | Album name (for easy display) |
 
-### Album
+### Album (Person 1 implements)
 | Field | Type idea | Meaning |
 |-------|-----------|---------|
 | `name` | `char name[64]` | Album name |
@@ -57,14 +57,14 @@ Use these exact struct / field names in C.
 | `songs` | array of `Song` | Songs in this album |
 | `songCount` | `int` | How many songs currently in album |
 
-### Artist
+### Artist (Person 1 implements)
 | Field | Type idea | Meaning |
 |-------|-----------|---------|
 | `name` | `char name[64]` | Artist name |
 | `albums` | list/array/tree children | Albums under this artist |
 | `albumCount` | `int` | How many albums |
 
-### Playlist
+### Playlist (Person 2 implements)
 | Field | Type idea | Meaning |
 |-------|-----------|---------|
 | `name` | `char name[64]` | Playlist name |
@@ -73,7 +73,7 @@ Use these exact struct / field names in C.
 ### Limits (same for both)
 | Limit | Value |
 |-------|-------|
-| Max name / title length | `64` characters (including null terminator space as you implement) |
+| Max name / title length | `64` |
 | Max songs per album | `50` |
 | Max albums per artist | `20` |
 | Max artists in library | `50` |
@@ -86,8 +86,6 @@ Use these exact struct / field names in C.
 ---
 
 ## 4. Shared status codes
-
-Use these exact return values everywhere:
 
 | Code | Name (optional constant) | Meaning |
 |------|--------------------------|---------|
@@ -102,9 +100,6 @@ Use these exact return values everywhere:
 
 ## 5. Shared function names
 
-These are the public names both sides rely on.  
-Implement them in your own files, but keep the names the same.
-
 ### Person 1 — Library API
 
 | Function | Purpose |
@@ -113,19 +108,26 @@ Implement them in your own files, but keep the names the same.
 | `addAlbum` | Add album under an artist |
 | `addSongToAlbum` | Add song into an album array + register in hash table |
 | `removeSong` | Remove song by ID from library structures |
+| `removeAlbum` | Remove album under an artist |
+| `removeArtist` | Remove artist from library |
 | `searchSongById` | Return song details for an ID |
 | `searchSongByName` | Find song(s) by title |
-| `createPlaylist` | Create empty playlist |
-| `addSongToPlaylist` | Append song ID to playlist linked list |
-| `removeSongFromPlaylist` | Remove song ID from playlist |
-| `getPlaylistSongAt` | Get song ID at position in playlist (0-based) |
-| `getPlaylistLength` | Number of songs in playlist |
-| `getNextSongInPlaylist` | Given current index, return next song ID |
+| `displayArtists` | Show all artists |
+| `displayAlbums` | Show albums (all or under an artist) |
+| `displaySongs` | Show songs (library / album) |
 
-### Person 2 — Player API
+### Person 2 — Playlist + Player API
 
 | Function | Purpose |
 |----------|---------|
+| `createPlaylist` | Create empty playlist |
+| `deletePlaylist` | Delete a playlist |
+| `addSongToPlaylist` | Append song ID to playlist linked list |
+| `removeSongFromPlaylist` | Remove song ID from playlist |
+| `reorderSongInPlaylist` | Change song order in playlist |
+| `getPlaylistSongAt` | Get song ID at position (0-based) |
+| `getPlaylistLength` | Number of songs in playlist |
+| `getNextSongInPlaylist` | Given current index, return next song ID |
 | `playSong` | Start playing a song ID |
 | `pauseSong` | Pause current song |
 | `resumeSong` | Resume current song |
@@ -139,7 +141,7 @@ Implement them in your own files, but keep the names the same.
 | `getCurrentSong` | Return current song ID |
 | `isPlaying` | Return whether music is playing |
 
-### Shared playback state (Person 2 owns)
+### Playback state (Person 2 owns)
 
 | Variable | Type idea | Meaning |
 |----------|-----------|---------|
@@ -154,16 +156,17 @@ Implement them in your own files, but keep the names the same.
 
 | File | Owner | Contains |
 |------|-------|----------|
-| `models.h` | Shared | Song, Album, Artist, Playlist structs + status codes |
-| `library.h` / `library.c` | Person 1 | Tree, hash, album arrays, playlist LL, library APIs |
+| `models.h` | Shared | Song, Album, Artist structs + status codes |
+| `library.h` / `library.c` | Person 1 | Tree, hash, album arrays, library APIs |
+| `playlist.h` / `playlist.c` | Person 2 | Playlist linked list APIs |
 | `player.h` / `player.c` | Person 2 | Stack, queue, playback APIs |
 | `main.c` | Person 2 | Menu + demo wiring |
 | `SHARED.md` | Shared | High-level split |
 | `DECISIONS.md` | Shared | This file |
 | `CHEATSHEET.md` | Shared | Short daily lookup |
 
-Person 1 may split internals into more files if needed (`playlist.c`, `hash.c`, etc.), as long as public APIs stay in `library.h`.  
-Person 2 may split (`stack.c`, `queue.c`), as long as public APIs stay in `player.h`.
+Person 1 may split internals (`hash.c`, `tree.c`, etc.) as long as public APIs stay in `library.h`.  
+Person 2 may keep playlist + player in fewer files if preferred, as long as names above stay clear.
 
 ---
 
@@ -172,20 +175,20 @@ Person 2 may split (`stack.c`, `queue.c`), as long as public APIs stay in `playe
 When user presses **Next** or a song ends:
 
 1. If play-next queue is **not empty** → play from queue  
-2. Else if a playlist is active → ask library for next playlist song  
+2. Else if a playlist is active → Person 2 gets next ID from **their** playlist linked list  
 3. Else → stop (`currentSongId = -1`, not playing)
 
 When user presses **Previous**:
 
-1. Push current song to recently-played only when leaving it via next/auto-next (Person 2 handles this)
-2. Previous pops from recently-played stack and plays that ID
+1. Person 2 manages recently-played stack
+2. Previous pops from stack and plays that ID
 3. If stack empty → return `ERR_EMPTY`
+
+Person 1 is only used here to **look up song details** by ID for display.
 
 ---
 
 ## 8. Sample demo data (same for both)
-
-Use these so integration testing matches:
 
 | ID | Title | Artist | Album | Duration |
 |----|-------|--------|-------|----------|
@@ -195,24 +198,17 @@ Use these so integration testing matches:
 | 4 | Perfect | Ed Sheeran | Divide | 263 |
 | 5 | Bohemian Rhapsody | Queen | A Night at the Opera | 354 |
 
-Demo playlist name: `Favorites`  
+Demo playlist name: `Favorites` (created by **Person 2**)  
 Songs in playlist order: `1 → 3 → 5 → 2`
 
 ---
 
-## 9. Quick freeze checklist
+## 9. Work split reminder
 
-Already decided in this file:
-
-- [x] Model field names
-- [x] Song ID format (`int`, from 1)
-- [x] Stack / queue store IDs
-- [x] Shared function names
-- [x] Who owns `currentSongId` (Person 2)
-- [x] Status codes
-- [x] Who writes `main` (Person 2)
-- [x] Who creates GitHub repo (Person 1)
-- [x] File names
-- [x] Sample demo data
+| Person 1 (3 DS) | Person 2 (3 DS) |
+|-----------------|-----------------|
+| Array | Linked List |
+| Tree | Stack |
+| Hash Table | Queue |
 
 If both accept this file, start coding on your branches.

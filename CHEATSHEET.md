@@ -9,8 +9,8 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 | `DECISIONS.md` | Exact shared decisions |
 | `SHARED.md` | Who does what + Git workflow |
 
-**Person 1:** library / playlists / tree / hash  
-**Person 2:** player / stack / queue / `main.c`
+**Person 1:** array + tree + hash · library / songs / artists / albums  
+**Person 2:** linked list + stack + queue · playlists / player / `main.c`
 
 ---
 
@@ -21,6 +21,7 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 - Strings max length = 64
 - Next song: queue → playlist → stop
 - Previous song: recently-played stack
+- Person 2 looks up song details via Person 1 `searchSongById`
 
 ## Status codes
 | Code | Meaning |
@@ -32,16 +33,16 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 | `-4` | duplicate |
 | `-5` | invalid |
 
-## Song fields
+## Song fields (Person 1)
 `id` · `title` · `duration` · `artistName` · `albumName`
 
-## Album fields
+## Album fields (Person 1)
 `name` · `artistName` · `songs` · `songCount`
 
-## Artist fields
+## Artist fields (Person 1)
 `name` · `albums` · `albumCount`
 
-## Playlist fields
+## Playlist fields (Person 2)
 `name` · `head` (linked list of song IDs)
 
 ## Files
@@ -49,6 +50,7 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 |------|-----|
 | `models.h` | Shared |
 | `library.h` / `library.c` | Person 1 |
+| `playlist.h` / `playlist.c` | Person 2 |
 | `player.h` / `player.c` | Person 2 |
 | `main.c` | Person 2 |
 
@@ -58,13 +60,17 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 ---
 
 ## Person 1 functions
-`addArtist` · `addAlbum` · `addSongToAlbum` · `removeSong`  
+`addArtist` · `addAlbum` · `addSongToAlbum`  
+`removeSong` · `removeAlbum` · `removeArtist`  
 `searchSongById` · `searchSongByName`  
-`createPlaylist` · `addSongToPlaylist` · `removeSongFromPlaylist`  
-`getPlaylistSongAt` · `getPlaylistLength` · `getNextSongInPlaylist`
+`displayArtists` · `displayAlbums` · `displaySongs`
 
 ## Person 2 functions
-`playSong` · `pauseSong` · `resumeSong` · `nextSong` · `previousSong`  
+**Playlist:** `createPlaylist` · `deletePlaylist` · `addSongToPlaylist`  
+`removeSongFromPlaylist` · `reorderSongInPlaylist`  
+`getPlaylistSongAt` · `getPlaylistLength` · `getNextSongInPlaylist`  
+
+**Player:** `playSong` · `pauseSong` · `resumeSong` · `nextSong` · `previousSong`  
 `enqueuePlayNext` · `dequeuePlayNext` · `clearPlayNext`  
 `pushRecentlyPlayed` · `popRecentlyPlayed`  
 `getCurrentSong` · `isPlaying`
@@ -74,7 +80,7 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 
 ## Next song order
 1. play-next queue  
-2. else playlist  
+2. else Person 2’s playlist  
 3. else stop
 
 ## Demo data
@@ -86,4 +92,4 @@ Full rules → `DECISIONS.md` · Project split → `SHARED.md`
 | 4 | Perfect |
 | 5 | Bohemian Rhapsody |
 
-Playlist `Favorites`: `1 → 3 → 5 → 2`
+Playlist `Favorites` (Person 2): `1 → 3 → 5 → 2`
