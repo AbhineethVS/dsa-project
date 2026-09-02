@@ -3,6 +3,8 @@
 
 typedef struct Song Song;
 
+
+
 void playSong();
 
 void pauseSong();

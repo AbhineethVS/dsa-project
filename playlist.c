@@ -2,10 +2,10 @@
 
 #include<stdlib.h>
 
-typedef struct Song{
+struct Song{
     int id;
     struct Song* nextSong;
-} Song;
+};
 
 Song* createPlaylist(){
     Song* head = NULL;
