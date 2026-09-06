@@ -1,15 +1,16 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-typedef struct Song Song;
 
-Song* createPlaylist();
+typedef struct Playlist Playlist;
 
-void addSongToPlaylist(int id, Song** head);
+Playlist* createPlaylist();
 
-void deletePlaylist(Song** head);
+void addSongToPlaylist(Playlist* head, int id);
 
-void removeSongFromPlaylist(int id, Song** head);
+void deletePlaylist(Playlist* head);
+
+void removeSongFromPlaylist(Playlist* head, int id);
 
 
 #endif

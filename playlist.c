@@ -3,9 +3,15 @@
 #include<stdlib.h>
 #include<stdio.h>
 
-struct Song{
+typedef struct Song{
     int id;
     struct Song* nextSong;
+} Song;
+
+struct Playlist{
+    char playlistName[64];
+    Song* head;
+    int length;
 };
 
 // PlayList Functions
@@ -87,13 +93,3 @@ void deletePlaylist(Song** head){
     }
     free(temp2);
 }
-
-// Song Information Functions
-
-void playSong(int id){
-    printf("Currently playing %d",id);
-}
-
-//PlayNextQueue functions
-
-
