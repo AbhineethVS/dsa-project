@@ -8,13 +8,11 @@ struct Song{
     struct Song* nextSong;
 };
 
+// PlayList Functions
+
 Song* createPlaylist(){
     Song* head = NULL; //NULL pointer
     return head;
-}
-
-void playSong(int id){
-    printf("Currently playing %d",id);
 }
 
 void addSongToPlaylist(int id, Song** head){
@@ -56,10 +54,10 @@ void removeSongFromPlaylist(int id, Song** head){
     //traverse till the Song node before the one to delete
 
     while((temp -> nextSong != NULL) && (temp -> nextSong -> id != id)){
-        //FUN FACT: Have to give the NULL check first as '&&' is left associative 
+        //FUN FACT: Have to give the NULL check first as '&&' evaluates operators left to right 
         //so if head points to NULL then the second condition is an invalid reference!!!
-        //"Short Circuit Evaluation"
-        
+        //"Short-Circuit Evaluation"
+
         temp = temp -> nextSong;
     }
 
@@ -79,7 +77,6 @@ void removeSongFromPlaylist(int id, Song** head){
     return;
 }
 
-
 void deletePlaylist(Song** head){
     Song* temp = (*head) -> nextSong;
     free(*head);
@@ -90,4 +87,13 @@ void deletePlaylist(Song** head){
     }
     free(temp2);
 }
+
+// Song Information Functions
+
+void playSong(int id){
+    printf("Currently playing %d",id);
+}
+
+//PlayNextQueue functions
+
 
