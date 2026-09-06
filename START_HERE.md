@@ -121,9 +121,9 @@ Person 1's library is ready.
 
 ### Step 1 — Implement playlist linked lists
 
-- [ . ] Create and delete a playlist.
-- [ . ] Add a song ID to the end.
-- [ . ] Remove a song ID.
+- [ ] Create and delete a playlist.
+- [ ] Add a song ID to the end.
+- [ ] Remove a song ID.
 - [ ] Reorder song IDs.
 - [ ] Display IDs temporarily, for example `1 -> 3 -> 5`.
 

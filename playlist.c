@@ -2,6 +2,7 @@
 
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 
 typedef struct Song{
     int id;
@@ -16,9 +17,18 @@ struct Playlist{
 
 // PlayList Functions
 
-Song* createPlaylist(){
-    Song* head = NULL; //NULL pointer
-    return head;
+Playlist* createPlaylist(char* playlistName){
+    Playlist* playlist = (Playlist*)malloc(sizeof(Playlist));
+
+    if(playlist == NULL){
+        return NULL;    //malloc allocation failed
+    }
+    
+    playlist->head = NULL; //NULL pointer
+    strcpy(playlist->playlistName, playlistName);
+    playlist->length = 0;
+
+    return playlist;
 }
 
 void addSongToPlaylist(int id, Song** head){
