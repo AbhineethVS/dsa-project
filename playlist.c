@@ -14,7 +14,7 @@ Song* createPlaylist(){
 }
 
 void playSong(int id){
-    printf("Currently playing %d"+id);
+    printf("Currently playing %d",id);
 }
 
 void addSongToPlaylist(int id, Song** head){
