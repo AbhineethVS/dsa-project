@@ -33,4 +33,8 @@ void addSongToPlaylist(int id, Song** head);
 
 void deletePlaylist(Song** head);
 
+void removeSongFromPlaylist(int id, Song** head);
+
+int currentSongId = -1;
+
 #endif
