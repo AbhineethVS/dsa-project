@@ -5,7 +5,7 @@ typedef struct Song Song;
 
 
 
-void playSong();
+void playSong(int id);
 
 void pauseSong();
 
@@ -28,5 +28,9 @@ void pushRecentlyPlayed();
 int popRecentlyPlayed();
 
 int isPlaying();
+
+void addSongToPlaylist(int id, Song** head);
+
+void deletePlaylist(Song** head);
 
 #endif

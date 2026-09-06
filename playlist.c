@@ -1,6 +1,7 @@
-#include <playlist.h>
+#include "playlist.h"
 
 #include<stdlib.h>
+#include<stdio.h>
 
 struct Song{
     int id;
@@ -10,6 +11,10 @@ struct Song{
 Song* createPlaylist(){
     Song* head = NULL;
     return head;
+}
+
+void playSong(int id){
+    printf("Currently playing %d"+id);
 }
 
 void addSongToPlaylist(int id, Song** head){
