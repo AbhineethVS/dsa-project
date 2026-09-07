@@ -4,14 +4,16 @@
 #include<stdio.h>
 #include<string.h>
 
-typedef struct Song{
+//internal implementation of Playlist using Song nodes
+
+typedef struct songNode{
     int id;
-    struct Song* nextSong;
-} Song;
+    struct songNode* nextSong;
+} songNode;
 
 struct Playlist{
     char playlistName[64];
-    Song* head;
+    songNode* head;
     int length;
 };
 
@@ -31,22 +33,41 @@ Playlist* createPlaylist(char* playlistName){
     return playlist;
 }
 
-void addSongToPlaylist(int id, Song** head){
-    Song* newSong = (Song*)malloc(sizeof(Song));
+int addSongToPlaylist(Playlist* playlist, int id){
+
+    if (playlist == NULL){
+        return ERR_INVALID;
+    }
+
+    if(playlist->length >= 100){    // Max playlist length taken to be 100
+        printf("Playlist is full...");
+        return ERR_FULL;
+    }
+
+    songNode* newSong = (songNode*)malloc(sizeof(songNode));
+
+    if(newSong == NULL){
+        return ERR_INVALID; // FIX MALLOC RETURN ERROR CODE
+    }
+
 
     newSong -> id = id;
     newSong -> nextSong = NULL;
 
-    if(*head == NULL){
-        *head = newSong;
+    if(playlist->head == NULL){
+        playlist->head = newSong;
     }
     else{
-        Song* temp = *head;
+        songNode* temp = playlist->head;
         while(temp -> nextSong != NULL){
             temp = temp -> nextSong;
         }
         temp -> nextSong = newSong;
     }
+
+    (playlist -> length)++;
+
+    return OK;
 }
 
 void removeSongFromPlaylist(int id, Song** head){
