@@ -14,11 +14,11 @@ typedef struct Playlist Playlist;
 
 Playlist* createPlaylist();
 
-int addSongToPlaylist(Playlist* head, int id);
+int addSongToPlaylist(Playlist* playlist, int id);
 
-void deletePlaylist(Playlist* head);
+int deletePlaylist(Playlist* playlist);
 
-void removeSongFromPlaylist(Playlist* head, int id);
+int removeSongFromPlaylist(Playlist* playlist, int id);
 
 
 #endif

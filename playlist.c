@@ -70,22 +70,28 @@ int addSongToPlaylist(Playlist* playlist, int id){
     return OK;
 }
 
-void removeSongFromPlaylist(int id, Song** head){
-    Song* temp = *head;
+int removeSongFromPlaylist(Playlist* playlist, int id){
+
+    if(playlist == NULL){
+        return ERR_INVALID;
+    }
+
+    songNode* temp = playlist->head;
+
     if(temp == NULL){
         printf("\nPlaylist empty...\n");
-        return;
+        return ERR_EMPTY;
     } 
 
     //if head is to be deleted!! 
     //since the code that follows deletes a node that has a previous node, not the first node...
-    //we need to modify the head pointer in this case, hence passing pointer to the pointer as function parameter
 
-    if((*head)->id == id){  //NOTE: -> has higher precedence the * so need to put brackets
-        Song* toFree = *head;
-        *head = (*head) ->nextSong; //preserve links if any
+    if(playlist->head->id == id){
+        songNode* toFree = playlist->head;
+        playlist->head = (playlist->head) ->nextSong; //preserve links if any
         free(toFree);
-        return;
+        (playlist -> length)--;
+        return OK;
     }
 
     //traverse till the Song node before the one to delete
@@ -103,15 +109,17 @@ void removeSongFromPlaylist(int id, Song** head){
 
     if(temp-> nextSong == NULL){
         printf("\nSong not found...\n");
-        return;
+        return ERR_NOT_FOUND;
     }
-    Song* temp2 = temp -> nextSong; //assign the nextSong of temp (which is what we want to delete) to temp2
+    songNode* temp2 = temp -> nextSong; //assign the nextSong of temp (which is what we want to delete) to temp2
 
     temp->nextSong = temp2->nextSong; //remove the song from the link
 
     free(temp2); //free memory of the song
 
-    return;
+    (playlist -> length)--;
+
+    return OK;
 }
 
 void deletePlaylist(Song** head){
