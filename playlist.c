@@ -122,7 +122,8 @@ int removeSongFromPlaylist(Playlist* playlist, int id){
     return OK;
 }
 
-void deletePlaylist(Song** head){
+int removeSongFromPlaylist(Playlist* playlist, int id){
+    
     Song* temp = (*head) -> nextSong;
     free(*head);
     Song* temp2;
