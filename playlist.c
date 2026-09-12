@@ -1,4 +1,5 @@
 #include "playlist.h"
+#include "models.h"
 
 #include<stdlib.h>
 #include<stdio.h>
