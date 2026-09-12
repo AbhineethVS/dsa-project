@@ -122,14 +122,21 @@ int removeSongFromPlaylist(Playlist* playlist, int id){
     return OK;
 }
 
-int removeSongFromPlaylist(Playlist* playlist, int id){
-    
-    Song* temp = (*head) -> nextSong;
-    free(*head);
-    Song* temp2;
-    while(temp -> nextSong != NULL){
-        temp2 = temp->nextSong;
-        free(temp);
+int deletePlaylist(Playlist* playlist){
+
+    if(playlist == NULL){
+        return ERR_INVALID;
     }
-    free(temp2);
+    
+    songNode* temp = playlist -> head;
+
+    while(temp != NULL){
+        songNode* temp2 = temp->nextSong;
+        free(temp);
+        temp = temp2;
+    }
+
+    free(playlist);
+
+    return OK;
 }
