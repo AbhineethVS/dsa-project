@@ -4,7 +4,7 @@
 
 typedef struct Playlist Playlist;
 
-Playlist* createPlaylist();
+Playlist* createPlaylist(char* playlistName);
 
 int addSongToPlaylist(Playlist* playlist, int id);
 
