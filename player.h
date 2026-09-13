@@ -1,31 +1,30 @@
-//Song details
+//Player
 
-void playSong(int id);
+int playSong(int id);
 
-void pauseSong();
+int pauseSong();
 
-void resumeSong();
+int resumeSong();
 
-void nextSong();
+int nextSong();
 
-void previousSong();
+int previousSong();
 
-int viewCurrentSong();
-
-
-//PlayNextQueue
-
-void enqueuePlayNext();
-
-void dequeuePlayNext();
-
-void clearPlayNext();
-
-void pushRecentlyPlayed();
-
-int popRecentlyPlayed();
+int getCurrentSong();
 
 int isPlaying();
 
 
-int currentSongId = -1;
+//PlayNextQueue
+
+int enqueuePlayNext(int id);
+
+int dequeuePlayNext(int *id);
+
+int clearPlayNext();
+
+//HistoryStack
+
+int pushRecentlyPlayed(int id);
+
+int popRecentlyPlayed(int *id);
