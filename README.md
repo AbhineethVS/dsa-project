@@ -1,3 +1,21 @@
+## PLAYER ARCHITECTURE
+
+```text
+              PLAYER
+                 │
+       ┌─────────┴─────────┐
+       ↓                   ↓
+ PLAY-NEXT QUEUE       ACTIVE PLAYLIST
+       │                   │
+       │ priority          │ fallback
+       └─────────┬─────────┘
+                 ↓
+             SONG TO PLAY
+```
+
+### MINDMAP
+
+```text
                     NEXT
                       │
                       ▼
@@ -13,3 +31,4 @@
                          YES           NO
                           │             │
                      PLAY IT          STOP
+```
