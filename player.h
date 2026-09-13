@@ -1,3 +1,16 @@
+
+/*
+                    player.c
+              /        |        \
+             /         |         \     
+        Queue         Stack      Player State
+          ↓             ↓            ↓
+      Play Next      History     Current Song 
+
+
+*/
+
+
 //HistoryStack
 
 int pushRecentlyPlayed(int id);

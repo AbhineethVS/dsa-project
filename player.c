@@ -4,26 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define HISTORY_MAX 50
-
-#define QUEUE_MAX 50
-
-/*
-                    player.c
-              /        |        \
-             /         |         \     
-        Queue         Stack      Player State
-          ↓             ↓            ↓
-      Play Next      History     Current Song 
-
-
-*/
-
-int currentSongId = -1;
-int isPlayingFlag = 0;
-char currentPlaylistName[64] = "";
-int currentPlaylistIndex = -1;
-
 
 
 
@@ -35,7 +15,7 @@ int currentPlaylistIndex = -1;
 *********************************************************************
 */
 
-
+#define HISTORY_MAX 50
 
 struct historyStack{
       int top;
@@ -104,6 +84,8 @@ int popRecentlyPlayed(int *id){
 
 //implementing a circular queue for Play Next Queue
 
+#define QUEUE_MAX 50
+
 struct playNextQueue{
       int front;
       int rear;
@@ -153,3 +135,12 @@ int clearPlayNext(){
 
       return OK;
 }
+
+
+
+int currentSongId = -1;
+int isPlayingFlag = 0;
+char currentPlaylistName[64] = "";
+int currentPlaylistIndex = -1;
+
+
