@@ -1,3 +1,19 @@
+//HistoryStack
+
+int pushRecentlyPlayed(int id);
+
+int popRecentlyPlayed(int *id);
+
+
+//PlayNextQueue
+
+int enqueuePlayNext(int id);
+
+int dequeuePlayNext(int *id);
+
+int clearPlayNext();
+
+
 //Player
 
 int playSong(int id);
@@ -13,18 +29,3 @@ int previousSong();
 int getCurrentSong();
 
 int isPlaying();
-
-
-//PlayNextQueue
-
-int enqueuePlayNext(int id);
-
-int dequeuePlayNext(int *id);
-
-int clearPlayNext();
-
-//HistoryStack
-
-int pushRecentlyPlayed(int id);
-
-int popRecentlyPlayed(int *id);
