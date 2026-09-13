@@ -6,7 +6,6 @@
 
 
 
-
 /*
 *********************************************************************
 
@@ -138,9 +137,64 @@ int clearPlayNext(){
 
 
 
+/*
+*********************************************************************
+
+                        PLAYER STATE
+
+*********************************************************************
+*/
+
 int currentSongId = -1;
 int isPlayingFlag = 0;
 char currentPlaylistName[64] = "";
 int currentPlaylistIndex = -1;
 
+int playSong(int id){
 
+      Song* song = searchSongById(id);
+
+      if(song == NULL){
+            return ERR_NOT_FOUND;
+      }
+
+      currentSongId = id;
+      isPlayingFlag = 1;
+
+      printf("\nPlaying : %s", song -> title);
+      return OK;
+}
+
+int pauseSong(){
+      isPlayingFlag = 0;
+
+      printf("Song Paused");
+
+      return OK;
+}
+
+int resumeSong(){
+
+      if(currentSongId == -1){
+            return ERR_INVALID;
+      }
+
+      Song* song = searchSongById(currentSongId);
+
+      isPlayingFlag = 1;
+      printf("\nPlaying : %s", song -> title);
+
+      return OK;
+}
+
+int nextSong(){
+      if (queue.count != 0){
+            dequeuePlayNext(&currentSongId);
+
+            Song* song = searchSongById(currentSongId);
+            printf("Playing: %s", song->title);
+
+            return OK;
+      }
+
+}
