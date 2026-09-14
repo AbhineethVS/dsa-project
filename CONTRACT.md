@@ -163,7 +163,6 @@ early.
 | `deletePlaylist` | Delete a playlist and free its nodes |
 | `addSongToPlaylist` | Append a song ID |
 | `removeSongFromPlaylist` | Remove a song ID |
-| `reorderSongInPlaylist` | Move a song to another position |
 | `getPlaylistSongAt` | Get the ID at a zero-based position |
 | `getPlaylistLength` | Return the number of song IDs |
 | `getNextSongInPlaylist` | Return the ID after the current position |

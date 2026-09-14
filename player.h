@@ -1,0 +1,47 @@
+#include "playlist.h"
+
+/*
+                    player.c
+              /        |        \
+             /         |         \     
+        Queue         Stack      Player State
+          ↓             ↓            ↓
+      Play Next      History     Current Song 
+
+
+*/
+
+
+//HistoryStack
+
+int pushRecentlyPlayed(int id);
+
+int popRecentlyPlayed(int *id);
+
+
+//PlayNextQueue
+
+int enqueuePlayNext(int id);
+
+int dequeuePlayNext(int *id);
+
+int clearPlayNext();
+
+
+//Player
+
+int playSong(int id);
+
+int pauseSong();
+
+int resumeSong();
+
+int nextSong();
+
+int previousSong();
+
+int setCurrentPlaylist(Playlist *playlist);
+
+int getCurrentSong();
+
+int isPlaying();
