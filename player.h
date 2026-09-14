@@ -1,3 +1,5 @@
+#include "playlist.h"
+
 /*
                     player.c
               /        |        \
@@ -37,6 +39,8 @@ int resumeSong();
 int nextSong();
 
 int previousSong();
+
+int setCurrentPlaylist(Playlist *playlist);
 
 int getCurrentSong();
 

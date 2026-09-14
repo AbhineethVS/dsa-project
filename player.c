@@ -1,5 +1,7 @@
 #include "player.h"
 #include "models.h"
+#include "playlist.h"
+#include "library.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -149,6 +151,8 @@ int currentSongId = -1;
 int isPlayingFlag = 0;
 char currentPlaylistName[64] = "";
 int currentPlaylistIndex = -1;
+Playlist *currentPlaylist = NULL;
+
 
 int playSong(int id){
 
@@ -181,6 +185,10 @@ int resumeSong(){
 
       Song* song = searchSongById(currentSongId);
 
+      if(song == NULL){
+            return ERR_NOT_FOUND;
+      }
+
       isPlayingFlag = 1;
       printf("\nPlaying : %s", song -> title);
 
@@ -188,13 +196,67 @@ int resumeSong(){
 }
 
 int nextSong(){
-      if (queue.count != 0){
-            dequeuePlayNext(&currentSongId);
 
-            Song* song = searchSongById(currentSongId);
-            printf("Playing: %s", song->title);
-
-            return OK;
+      //push to Stack
+      if(currentSongId != -1){
+            pushRecentlyPlayed(currentSongId);
       }
 
+      //Queue has priority
+
+      if (queue.count != 0){
+            dequeuePlayNext(&currentSongId);
+            return playSong(currentSongId);
+      }
+
+      // No queue → use playlist
+      currentPlaylistIndex++;
+
+      int nextId = getPlaylistSongAt(currentPlaylist, currentPlaylistIndex);
+
+      if(nextId < 0){
+            currentSongId = -1;
+            isPlayingFlag = 0;
+            currentPlaylistIndex = -1;
+            return ERR_EMPTY;
+      }
+
+      return playSong(nextId);
+
+}
+
+
+int setCurrentPlaylist(Playlist *playlist){
+    if(playlist == NULL){
+        return ERR_INVALID;
+    }
+
+    currentPlaylist = playlist;
+    currentPlaylistIndex = -1;
+
+    return OK;
+}
+
+int previousSong(){
+      int prevId;
+
+      int result = popRecentlyPlayed(&prevId);
+
+      if(result != OK){
+            return result;
+      }
+
+      return playSong(prevId);
+}
+
+int getCurrentSong(){
+      if(currentSongId == -1){
+            return ERR_EMPTY;
+      }
+
+      return currentSongId;
+}
+
+int isPlaying(){
+      return isPlayingFlag;
 }

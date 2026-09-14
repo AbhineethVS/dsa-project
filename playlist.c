@@ -1,5 +1,6 @@
 #include "playlist.h"
 #include "models.h"
+#include "library.h"
 
 #include<stdlib.h>
 #include<stdio.h>
@@ -140,4 +141,77 @@ int deletePlaylist(Playlist* playlist){
     free(playlist);
 
     return OK;
+}
+
+int getPlaylistLength(Playlist* playlist){
+    if(playlist == NULL){
+        return ERR_INVALID;
+    }
+    return playlist -> length;
+}
+
+int getNextSongInPlaylist(Playlist* playlist, int index){
+
+    if(playlist == NULL){
+        return ERR_INVALID;
+    }
+
+    if(index < 0 || index >= playlist->length - 1){
+        return ERR_NOT_FOUND;
+    }
+
+    songNode* temp = playlist -> head;
+
+    for(int i = 0; i <= index; i++){
+        temp = temp->nextSong;
+    }
+
+    return temp -> id;
+}
+
+int getPlaylistSongAt(Playlist* playlist, int index){
+
+    if(playlist == NULL){
+        return ERR_INVALID;
+    }
+
+    if(index < 0 || index >= playlist->length){
+        return ERR_NOT_FOUND;
+    }
+
+    songNode* temp = playlist->head;
+
+    for(int i = 0; i < index; i++){
+        temp = temp->nextSong;
+    }
+
+    return temp->id;
+}
+
+void displayPlaylist(Playlist* playlist){
+
+    if(playlist == NULL){
+        printf("Invalid playlist.\n");
+        return;
+    }
+
+    printf("\nPlaylist: %s\n", playlist->playlistName);
+
+    if(playlist->head == NULL){
+        printf("Playlist is empty.\n");
+        return;
+    }
+
+    songNode* temp = playlist->head;
+
+    while(temp != NULL){
+
+        Song* song = searchSongById(temp->id);
+
+        if(song != NULL){
+            printf("%d. %s\n", song->id, song->title);
+        }
+
+        temp = temp->nextSong;
+    }
 }

@@ -12,5 +12,12 @@ int deletePlaylist(Playlist* playlist);
 
 int removeSongFromPlaylist(Playlist* playlist, int id);
 
+int getPlaylistLength(Playlist* playlist);
+
+int getNextSongInPlaylist(Playlist* playlist, int index);
+
+int getPlaylistSongAt(Playlist* playlist, int index);
+
+void displayPlaylist(Playlist* playlist);
 
 #endif
